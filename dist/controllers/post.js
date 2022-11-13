@@ -49,7 +49,7 @@ const addPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).send(err);
     }
 });
-const updatePost = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const post = yield post_model_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).send(post);

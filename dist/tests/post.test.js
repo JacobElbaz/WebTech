@@ -20,7 +20,7 @@ const newPostMessage = 'This is the new test post message';
 const newPostSender = '123456';
 const updatedPostMessage = "This is the updated message";
 const updatedPostSender = "654321";
-let newPostId = null;
+let newPostId = '';
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield post_model_1.default.remove();
 }));
@@ -52,6 +52,10 @@ describe("Posts Tests", () => {
         expect(response.body.sender).toEqual(newPostSender);
         expect(response.body._id).toEqual(newPostId);
     }));
+    test("get post by id failed", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(server_1.default).get('/post/' + '12342653');
+        expect(response.statusCode).toEqual(400);
+    }));
     test("get post by sender", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).get('/post')
             .query({ sender: newPostSender });
@@ -60,11 +64,15 @@ describe("Posts Tests", () => {
         expect(response.body[0].sender).toEqual(newPostSender);
     }));
     test("update post", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(server_1.default).put('/post/' + newPostId)
+        let response = yield (0, supertest_1.default)(server_1.default).put('/post/' + newPostId)
             .send({
             message: updatedPostMessage,
             sender: updatedPostSender
         });
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.message).toEqual(updatedPostMessage);
+        expect(response.body.sender).toEqual(updatedPostSender);
+        response = yield (0, supertest_1.default)(server_1.default).get('/post/' + newPostId);
         expect(response.statusCode).toEqual(200);
         expect(response.body.message).toEqual(updatedPostMessage);
         expect(response.body.sender).toEqual(updatedPostSender);

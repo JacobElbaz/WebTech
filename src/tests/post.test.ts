@@ -7,7 +7,7 @@ const newPostMessage = 'This is the new test post message'
 const newPostSender = '123456'
 const updatedPostMessage = "This is the updated message"
 const updatedPostSender = "654321"
-let newPostId = null
+let newPostId = ''
 
 beforeAll( async () => {
     await Post.remove()
@@ -45,6 +45,11 @@ describe("Posts Tests", () => {
         expect(response.body._id).toEqual(newPostId)
     })
 
+    test("get post by id failed", async () => {
+        const response = await request(app).get('/post/' + '12342653')
+        expect(response.statusCode).toEqual(400)
+    })
+
     test("get post by sender", async () => {
         const response = await request(app).get('/post')
         .query({sender : newPostSender})
@@ -54,11 +59,16 @@ describe("Posts Tests", () => {
     })
 
     test("update post", async () => {
-        const response = await request(app).put('/post/' + newPostId)
+        let response = await request(app).put('/post/' + newPostId)
         .send({
             message : updatedPostMessage,
             sender : updatedPostSender
         })
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.message).toEqual(updatedPostMessage)
+        expect(response.body.sender).toEqual(updatedPostSender)
+
+        response = await request(app).get('/post/' + newPostId)
         expect(response.statusCode).toEqual(200)
         expect(response.body.message).toEqual(updatedPostMessage)
         expect(response.body.sender).toEqual(updatedPostSender)

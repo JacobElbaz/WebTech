@@ -1,6 +1,7 @@
 import Post from '../models/post_model'
+import { Request, Response } from 'express'
 
-const getPosts = async (req, res) => {
+const getPosts = async (req: Request, res: Response) => {
     try {
         let posts = {}
         if (req.query.sender == null) {
@@ -14,7 +15,7 @@ const getPosts = async (req, res) => {
     }
 }
 
-const getPostById = async (req, res) => {
+const getPostById = async (req: Request, res: Response) => {
     try {
         const post = await Post.findById(req.params.id)
         res.status(200).send(post)
@@ -23,7 +24,7 @@ const getPostById = async (req, res) => {
     }
 }
 
-const addPost = async (req, res) => {
+const addPost = async (req: Request, res: Response) => {
     const post = new Post({
         message: req.body.message,
         sender: req.body.sender
@@ -37,7 +38,7 @@ const addPost = async (req, res) => {
     }
 }
 
-const updatePost = async (req, res, next) => {
+const updatePost = async (req: Request, res: Response) => {
     try{
         const post = await Post.findByIdAndUpdate(req.params.id, req.body, {new: true})
         res.status(200).send(post)
