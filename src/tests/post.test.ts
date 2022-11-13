@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
-const request = require('supertest')
-const app = require('../server')
-const Post = require('../models/post_model')
+import mongoose from 'mongoose'
+import request from 'supertest'
+import app from '../server'
+import Post from '../models/post_model'
 
 const newPostMessage = 'This is the new test post message'
 const newPostSender = '123456'

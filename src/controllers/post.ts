@@ -1,8 +1,8 @@
-const Post = require('../models/post_model')
+import Post from '../models/post_model'
 
-const getPosts = async (req, res, next) => {
+const getPosts = async (req, res) => {
     try {
-        let posts
+        let posts = {}
         if (req.query.sender == null) {
             posts = await Post.find()
         } else {
@@ -14,7 +14,7 @@ const getPosts = async (req, res, next) => {
     }
 }
 
-const getPostById = async (req, res, next) => {
+const getPostById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id)
         res.status(200).send(post)
@@ -23,14 +23,14 @@ const getPostById = async (req, res, next) => {
     }
 }
 
-const addPost = async (req, res, next) => {
-    const post = Post({
+const addPost = async (req, res) => {
+    const post = new Post({
         message: req.body.message,
         sender: req.body.sender
     })
 
     try {
-        newPost = await post.save()
+        const newPost = await post.save()
         res.status(200).send(newPost)
     } catch (err) {
         res.status(400).send(err)
@@ -46,4 +46,4 @@ const updatePost = async (req, res, next) => {
     }
 }
 
-module.exports = { getPosts, getPostById, addPost, updatePost }
+export = { getPosts, getPostById, addPost, updatePost }
