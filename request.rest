@@ -9,9 +9,31 @@ GET http://localhost:3000/post/635e7ef03656b7eec4e9b644
 ###
 
 POST http://localhost:3000/post
-Content-Type: application/json
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzODM4MGI5ZWE0MWZkY2Y2NGUyNjJiZCIsImlhdCI6MTY2OTU2MjY1NCwiZXhwIjoxNjY5NTY2MjU0fQ.YaHLj394nWaebPGw1MpIhJLoam1kHHlqzYmFe6GyeQ4
 
 {
     "message" : "this is my new message",
     "sender" : "123456"
 }
+
+###
+
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "user@gmail.com",
+    "password": "123456"
+}
+
+###
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "user@gmail.com",
+    "password": "123456"
+}
+
+###

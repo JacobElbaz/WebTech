@@ -1,12 +1,13 @@
 import express from 'express'
 const router = express.Router()
 import post from '../controllers/post.js'
+import auth from '../controllers/auth.js'
 
-router.get('/', post.getPosts)
-router.get('/:id', post.getPostById)
+router.get('/', auth.authenticateMiddleware, post.getPosts)
+router.get('/:id', auth.authenticateMiddleware, post.getPostById)
 
-router.post('/', post.addPost)
+router.post('/', auth.authenticateMiddleware, post.addPost)
 
-router.put('/:id', post.updatePost)
+router.put('/:id', auth.authenticateMiddleware, post.updatePost)
 
 export = router

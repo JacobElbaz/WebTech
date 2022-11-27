@@ -10,10 +10,13 @@ const body_parser_1 = __importDefault(require("body-parser"));
 app.use(body_parser_1.default.urlencoded({ extended: true, limit: '1mb' }));
 app.use(body_parser_1.default.json());
 const mongoose_1 = __importDefault(require("mongoose"));
-mongoose_1.default.connect(process.env.DATABASE_URL);
+mongoose_1.default.connect(process.env.DATABASE_URL); //,{useNewUrlParser:true})
 const db = mongoose_1.default.connection;
 db.on('error', error => { console.error(error); });
-db.once('open', () => { console.log('connected to mongo'); });
+db.once('open', () => { console.log('connected to mongo DB'); });
+app.use('/public', express_1.default.static('public'));
+const auth_js_1 = __importDefault(require("./routes/auth.js"));
+app.use('/auth', auth_js_1.default);
 const post_js_1 = __importDefault(require("./routes/post.js"));
 app.use('/post', post_js_1.default);
 module.exports = app;

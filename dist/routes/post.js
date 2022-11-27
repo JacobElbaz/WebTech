@@ -5,9 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const post_js_1 = __importDefault(require("../controllers/post.js"));
-router.get('/', post_js_1.default.getPosts);
-router.get('/:id', post_js_1.default.getPostById);
-router.post('/', post_js_1.default.addPost);
-router.put('/:id', post_js_1.default.updatePost);
+const auth_js_1 = __importDefault(require("../controllers/auth.js"));
+router.get('/', auth_js_1.default.authenticateMiddleware, post_js_1.default.getPosts);
+router.get('/:id', auth_js_1.default.authenticateMiddleware, post_js_1.default.getPostById);
+router.post('/', auth_js_1.default.authenticateMiddleware, post_js_1.default.addPost);
+router.put('/:id', auth_js_1.default.authenticateMiddleware, post_js_1.default.updatePost);
 module.exports = router;
 //# sourceMappingURL=post.js.map
