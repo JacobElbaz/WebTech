@@ -1,17 +1,28 @@
 import Post from '../models/post_model'
 import { Request, Response } from 'express'
 
+const getAllPostsEvent = async () => { 
+    console.log("")
+    try{
+        const posts = await Post.find()
+        return {status: 'OK', data: posts}
+    }catch(err){
+        return {status: 'FAIL', data: ""}
+    }
+}
+
+
 const getPosts = async (req: Request, res: Response) => {
-    try {
+    try{
         let posts = {}
-        if (req.query.sender == null) {
+        if (req.query.sender == null){
             posts = await Post.find()
-        } else {
-            posts = await Post.find({'sender': req.query.sender})
+        }else{
+            posts = await Post.find({'sender' : req.query.sender})
         }
-        res.status(200).send(posts)
-    } catch (err) {
-        res.status(400).send(err)
+        res.status(200).send(posts) 
+    }catch(err){
+        res.status(400).send({'error':"fail to get posts from db"})
     }
 }
 
@@ -27,14 +38,16 @@ const getPostById = async (req: Request, res: Response) => {
 const addPost = async (req: Request, res: Response) => {
     const post = new Post({
         message: req.body.message,
-        sender: req.body.sender
+        sender: req.body.userId     //extract the user id from the auth 
     })
 
-    try {
+    try{
         const newPost = await post.save()
+        console.log("save post in db")
         res.status(200).send(newPost)
-    } catch (err) {
-        res.status(400).send(err)
+    }catch (err){
+        console.log("fail to save post in db")
+        res.status(400).send({'error': 'fail adding new post to db'})
     }
 }
 
@@ -42,9 +55,10 @@ const updatePost = async (req: Request, res: Response) => {
     try{
         const post = await Post.findByIdAndUpdate(req.params.id, req.body, {new: true})
         res.status(200).send(post)
-    } catch (err) {
-        res.status(400).send(err)
+    }catch (err){
+        console.log("fail to update post in db")
+        res.status(400).send({'error': 'fail adding new post to db'})
     }
 }
 
-export = { getPosts, getPostById, addPost, updatePost }
+export = { getPosts, getPostById, addPost, updatePost, getAllPostsEvent }

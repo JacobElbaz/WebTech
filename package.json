@@ -7,8 +7,10 @@
     "start": "tsc && node dist/app.js",
     "devstart": "nodemon ./src/app.ts",
     "lint": "esLint . --ext .ts",
-    "test": "tsc && jest --detectOpenHandles --forceExit ./dist/tests",
-    "testAuth": "tsc && jest --detectOpenHandles --forceExit ./dist/tests/auth.test.js"
+    "test": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests",
+    "testAuth": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests/auth.test.js",
+    "testPost": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests/post.test.js",
+    "testSocket": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests/socket.test.js"
   },
   "author": "Jacob Elbaz",
   "license": "ISC",
@@ -20,6 +22,8 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4",
     "ts-jest": "^29.0.3"
   },
   "devDependencies": {
