@@ -22,6 +22,7 @@ const userEmail = "user1@gmail.com";
 const userPassword = "12345";
 const userEmail2 = "user2@gmail.com";
 const userPassword2 = "12345";
+let newPostId = null;
 let client1;
 let client2;
 function clientSocketConnect(clientSocket) {
@@ -58,7 +59,6 @@ describe("my awesome project", () => {
         yield user_model_1.default.remove();
         client1 = yield connectUser(userEmail, userPassword);
         client2 = yield connectUser(userEmail2, userPassword2);
-        console.log("finish beforeAll");
     }));
     afterAll(() => {
         client1.socket.close();
@@ -68,20 +68,52 @@ describe("my awesome project", () => {
     });
     test("should work", (done) => {
         client1.socket.once("echo:echo_res", (arg) => {
-            console.log("echo:echo");
             expect(arg.msg).toBe('hello');
             done();
         });
         client1.socket.emit("echo:echo", { 'msg': 'hello' });
     });
-    test("Post get all test", (done) => {
-        client1.socket.once('post:get_all', (arg) => {
-            console.log("on any " + arg);
-            expect(arg.status).toBe('OK');
+    test("postAdd", (done) => {
+        client1.socket.emit('post:post', { 'message': 'this is my message', 'sender': client1.id });
+        client1.socket.on('post:post.response', (arg) => {
+            expect(arg.message).toBe('this is my message');
+            expect(arg.sender).toBe(client1.id);
+            newPostId = arg._id;
             done();
         });
-        console.log(" test post get all");
-        client1.socket.emit("post:get_all", "stam");
+    });
+    test("Post get all test", (done) => {
+        client1.socket.emit('post:get');
+        client1.socket.on('post:get.response', (arg) => {
+            expect(arg.length).toEqual(1);
+            expect(arg[0].sender).toBe(client1.id);
+            expect(arg[0].message).toBe('this is my message');
+            done();
+        });
+    });
+    test("Post get by id", (done) => {
+        client1.socket.emit('post:get:id', { 'id': newPostId });
+        client1.socket.on('post:get:id.response', (arg) => {
+            expect(arg.sender).toBe(client1.id);
+            expect(arg.message).toBe('this is my message');
+            done();
+        });
+    });
+    test("Post get by sender", (done) => {
+        client1.socket.emit('post:get:sender', { 'sender': client1.id });
+        client1.socket.on('post:get:sender.response', (arg) => {
+            expect(arg[0].sender).toBe(client1.id);
+            expect(arg[0].message).toBe('this is my message');
+            done();
+        });
+    });
+    test("postUpdate", (done) => {
+        client1.socket.emit('post:put', { 'body': { 'message': 'this is the new test post message' }, 'params': { 'id': newPostId } });
+        client1.socket.on('post:put.response', (arg) => {
+            expect(arg.message).toBe('this is the new test post message');
+            expect(arg.sender).toBe(client1.id);
+            done();
+        });
     });
     test("Test chat messages", (done) => {
         const message = "hi... test 123";

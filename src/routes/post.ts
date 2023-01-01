@@ -9,6 +9,7 @@ import express from 'express'
 const router = express.Router()
 import post from '../controllers/post.js'
 import auth from '../controllers/auth.js'
+import GenericRequest from '../utils/Request.js'
 
 /**
 * @swagger
@@ -56,7 +57,21 @@ import auth from '../controllers/auth.js'
  *                  $ref: '#/components/schemas/Post'
  *  
  */
-router.get('/', auth.authenticateMiddleware, post.getPosts)
+router.get('/', auth.authenticateMiddleware, async (req, res) => {
+    try {
+        const request = {body: {
+            sender: req.query.sender
+        }}
+        const response = await post.getPosts(GenericRequest.fromRestRequest(request))
+        response.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+
+        })
+    }
+})
 
 /**
  * @swagger
@@ -82,7 +97,22 @@ router.get('/', auth.authenticateMiddleware, post.getPosts)
  *               $ref: '#/components/schemas/Post'
  *  
  */
-router.get('/:id', auth.authenticateMiddleware, post.getPostById)
+router.get('/:id', auth.authenticateMiddleware, async (req, res) => {
+    try {
+        const request = {
+            body: {
+                id: req.params.id
+            }
+        }
+        const response = await post.getPostById(GenericRequest.fromRestRequest(request))
+        response.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+})
 
 /**
  * @swagger
@@ -107,7 +137,17 @@ router.get('/:id', auth.authenticateMiddleware, post.getPostById)
  *               $ref: '#/components/schemas/Post'
  *  
  */
-router.post('/', auth.authenticateMiddleware, post.addPost)
+router.post('/', auth.authenticateMiddleware, async (req, res) => {
+    try {
+        const response = await post.addPost(GenericRequest.fromRestRequest(req))
+        response.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+})
 
 /**
  * @swagger
@@ -139,6 +179,16 @@ router.post('/', auth.authenticateMiddleware, post.addPost)
  *               $ref: '#/components/schemas/Post'
  *  
  */
-router.put('/:id', auth.authenticateMiddleware, post.updatePost)
+router.put('/:id', auth.authenticateMiddleware, async (req, res) => {
+    try {
+        const response = await post.updatePost(GenericRequest.fromRestRequest(req))
+        response.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+})
 
 export = router

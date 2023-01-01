@@ -1,26 +1,61 @@
 import { Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
-import postController from "../controllers/post"
+import post from "../controllers/post"
+import GenericRequest from "../utils/Request"
 
-export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, 
-            socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) => {
-                
+export = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
+    socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) => {
+
     const getAllPosts = async () => {
-        console.log("getAllPosts handler")
-        const res = await postController.getAllPostsEvent()
-        socket.emit('post:get_all', res)
+        try {
+            const response = await post.getPosts()
+            socket.emit('post:get.response', response.body)
+        } catch (err) {
+            socket.emit('post:get.response', {'status': 'fail'})
+        }
     }
 
-    const getPostById = (payload) => {
-        socket.emit('echo:echo', payload)
+    const getPostById = async (req) => {
+        try {
+            const response = await post.getPostById(new GenericRequest(req))
+            socket.emit('post:get:id.response', response.body)
+        } catch (err) {
+            socket.emit('post:get:id.response', { 'status': 'fail' })
+        }
     }
-    const addNewPost = (payload) => {
-        socket.emit('echo:echo', payload)
+    
+    const getPostBySender = async (req) => {
+        try {
+            const response = await post.getPosts(new GenericRequest(req))
+            socket.emit('post:get:sender.response', response.body)
+        } catch (err) {
+            socket.emit('post:get:sender.response', { 'status': 'fail' })
+        }
     }
 
+    const addNewPost = async (body) => {
+        try {
+            const response = await post.addPost(new GenericRequest(body, body.sender))
+            socket.emit('post:post.response', response.body)
+        } catch (err) {
+            socket.emit('post:post.response', { 'status': 'fail' })
+        }
+    }
+    
+    
+    const updatePost = async (req) => {
+        try {
+            const response = await post.updatePost(new GenericRequest(req.body, null, req.params))
+            console.log(response)
+            socket.emit('post:put.response', response.body)
+        } catch (err) {
+            socket.emit('post:put.response', { 'status': 'fail' })
+        }
+    }
 
-    console.log('register echo handlers')
-    socket.on("post:get_all", getAllPosts)
-    socket.on("post:get_by_id", getPostById)
-    socket.on("post:add_new", addNewPost)
+    socket.on("post:get", getAllPosts)
+    socket.on("post:get:id", getPostById)
+    socket.on("post:get:sender", getPostBySender)
+    socket.on("post:post", addNewPost)
+    socket.on("post:put", updatePost)
 }

@@ -108,8 +108,6 @@ const refresh = async (req:Request ,res:Response)=>{
         const tokens = await generateTokens(userObj._id.toString())
 
         userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens.refreshToken
-        console.log("refresh token: " + refreshToken)
-        console.log("with token: " + tokens.refreshToken)
         await userObj.save()
 
         return res.status(200).send(tokens)
@@ -147,7 +145,6 @@ const authenticateMiddleware = async (req:Request ,res:Response, next: NextFunct
     try{
         const user = <TokenInfo>jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
         req.body.userId = user.id
-        console.log("token user: " + user)
         return next()
     }catch(err){
         return sendError(res,'fail validating token')

@@ -101,8 +101,6 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const tokens = yield generateTokens(userObj._id.toString());
         userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens.refreshToken;
-        console.log("refresh token: " + refreshToken);
-        console.log("with token: " + tokens.refreshToken);
         yield userObj.save();
         return res.status(200).send(tokens);
     }
@@ -139,7 +137,6 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
     try {
         const user = jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
         req.body.userId = user.id;
-        console.log("token user: " + user);
         return next();
     }
     catch (err) {

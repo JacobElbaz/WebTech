@@ -12,63 +12,56 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const post_model_1 = __importDefault(require("../models/post_model"));
-const getAllPostsEvent = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const posts = yield post_model_1.default.find();
-        return { status: 'OK', data: posts };
-    }
-    catch (err) {
-        return { status: 'FAIL', data: "" };
-    }
-});
-const getPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const Response_1 = __importDefault(require("../utils/Response"));
+const Error_1 = __importDefault(require("../utils/Error"));
+const getPosts = (req = null) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let posts = {};
-        if (req.query.sender == null) {
+        if (req == null || req.body.sender == null) {
             posts = yield post_model_1.default.find();
         }
         else {
-            posts = yield post_model_1.default.find({ 'sender': req.query.sender });
+            posts = yield post_model_1.default.find({ 'sender': req.body.sender });
         }
-        res.status(200).send(posts);
+        return new Response_1.default(posts, null, null);
     }
     catch (err) {
-        res.status(400).send({ 'error': "fail to get posts from db" });
+        return new Response_1.default(null, null, new Error_1.default(400, err.message));
     }
 });
-const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getPostById = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const post = yield post_model_1.default.findById(req.params.id);
-        res.status(200).send(post);
+        const post = yield post_model_1.default.findById(req.body.id);
+        return new Response_1.default(post, null, null);
     }
     catch (err) {
-        res.status(400).send(err);
+        return new Response_1.default(null, null, new Error_1.default(400, err.message));
     }
 });
-const addPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addPost = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const post = new post_model_1.default({
         message: req.body.message,
-        sender: req.body.userId //extract the user id from the auth 
+        sender: req.userId
     });
     try {
         const newPost = yield post.save();
-        console.log("save post in db");
-        res.status(200).send(newPost);
+        return new Response_1.default(newPost, req.userId, null);
     }
     catch (err) {
-        console.log("fail to save post in db");
-        res.status(400).send({ 'error': 'fail adding new post to db' });
+        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
     }
 });
-const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePost = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log('req update');
+        console.log(req);
         const post = yield post_model_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).send(post);
+        console.log(post);
+        return new Response_1.default(post, req.userId, null);
     }
     catch (err) {
-        console.log("fail to update post in db");
-        res.status(400).send({ 'error': 'fail adding new post to db' });
+        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
     }
 });
-module.exports = { getPosts, getPostById, addPost, updatePost, getAllPostsEvent };
+module.exports = { getPosts, getPostById, addPost, updatePost };
 //# sourceMappingURL=post.js.map
