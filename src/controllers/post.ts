@@ -2,7 +2,6 @@ import Post from '../models/post_model'
 import { Request, Response } from 'express'
 
 const getAllPostsEvent = async () => { 
-    console.log("")
     try{
         const posts = await Post.find()
         return {status: 'OK', data: posts}

@@ -7,10 +7,10 @@
     "start": "tsc && node dist/app.js",
     "devstart": "nodemon ./src/app.ts",
     "lint": "esLint . --ext .ts",
-    "test": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests",
-    "testAuth": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests/auth.test.js",
-    "testPost": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests/post.test.js",
-    "testSocket": "tsc && jest --detectOpenHandles --runInBand --forceExit ./dist/tests/socket.test.js"
+    "test": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests",
+    "testAuth": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/auth.test.js",
+    "testPost": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/post.test.js",
+    "testSocket": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/socket.test.js"
   },
   "author": "Jacob Elbaz",
   "license": "ISC",

@@ -1,0 +1,6 @@
+PORT = 3000
+DATABASE_URL = mongodb+srv://Jacob:wfNfp4VUr2gzTAVw@cluster0.druiuui.mongodb.net/?retryWrites=true&w=majority
+ACCESS_TOKEN_SECRET = fjhbsi879483nlwes9rolfg980348ndsjnfgdfvjndfgiyrf789ernlerg9
+JWT_TOKEN_EXPIRATION = 5s
+REFRESH_TOKEN_SECRET = kjfdbgpr8fhj094j9jgkmdgzgfboknmgbnlkjtgnhitrobt
+NODE_ENV = development
