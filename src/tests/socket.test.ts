@@ -6,6 +6,7 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 import request from 'supertest'
 import Post from '../models/post_model'
 import User from '../models/user_model'
+import Message from "../models/message_model";
 
 const userEmail = "user1@gmail.com"
 const userPassword = "12345"
@@ -60,6 +61,7 @@ describe("my awesome project", () => {
     beforeAll(async () => {
         await Post.remove()
         await User.remove()
+        await Message.remove()
         client1 = await connectUser(userEmail, userPassword)
         client2 = await connectUser(userEmail2, userPassword2)
     });
@@ -135,6 +137,17 @@ describe("my awesome project", () => {
             done()
         })
         client1.socket.emit("chat:send_message", { 'to': client2.id, 'message': message })
+    })
+
+    test("Test get messages", (done) => {
+        const message = "hi... test 123"
+        client1.socket.once('chat:message', (args) => {
+            expect(args[0].to).toBe(client2.id)
+            expect(args[0].message).toBe(message)
+            expect(args[0].from).toBe(client1.id)
+            done()
+        })
+        client1.socket.emit("chat:get_messages", { 'id': client2.id })
     })
 
 });

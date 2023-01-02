@@ -1,6 +1,4 @@
 import Post from '../models/post_model'
-import { Request, Response } from 'express'
-import GenericRequest from '../utils/Request'
 import GenericResponse from '../utils/Response'
 import GenericError from '../utils/Error'
 

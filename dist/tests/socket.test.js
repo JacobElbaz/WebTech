@@ -18,6 +18,7 @@ const socket_io_client_1 = __importDefault(require("socket.io-client"));
 const supertest_1 = __importDefault(require("supertest"));
 const post_model_1 = __importDefault(require("../models/post_model"));
 const user_model_1 = __importDefault(require("../models/user_model"));
+const message_model_1 = __importDefault(require("../models/message_model"));
 const userEmail = "user1@gmail.com";
 const userPassword = "12345";
 const userEmail2 = "user2@gmail.com";
@@ -57,6 +58,7 @@ describe("my awesome project", () => {
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield post_model_1.default.remove();
         yield user_model_1.default.remove();
+        yield message_model_1.default.remove();
         client1 = yield connectUser(userEmail, userPassword);
         client2 = yield connectUser(userEmail2, userPassword2);
     }));
@@ -124,6 +126,16 @@ describe("my awesome project", () => {
             done();
         });
         client1.socket.emit("chat:send_message", { 'to': client2.id, 'message': message });
+    });
+    test("Test get messages", (done) => {
+        const message = "hi... test 123";
+        client1.socket.once('chat:message', (args) => {
+            expect(args[0].to).toBe(client2.id);
+            expect(args[0].message).toBe(message);
+            expect(args[0].from).toBe(client1.id);
+            done();
+        });
+        client1.socket.emit("chat:get_messages", { 'id': client2.id });
     });
 });
 //# sourceMappingURL=socket.test.js.map
