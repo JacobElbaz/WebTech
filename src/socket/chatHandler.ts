@@ -26,7 +26,6 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
             const messagesSends = await Message.find({'from': socket.data.user, 'to': payload.id})
             const messagesReceived = await Message.find({'from': payload.id, 'to': socket.data.user})
             messages = messagesSends.concat(messagesReceived)
-            console.log(messages);
         } catch (err) { console.log(err) }
         io.to(socket.data.user).emit("chat:message", messages)
     }

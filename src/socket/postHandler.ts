@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import post from "../controllers/post"
-import GenericRequest from "../utils/Request"
+import { Request } from "../Utils"
 
 export = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) => {
@@ -15,9 +15,9 @@ export = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
         }
     }
 
-    const getPostById = async (req) => {
+    const getPostById = async (params) => {
         try {
-            const response = await post.getPostById(new GenericRequest(req))
+            const response = await post.getPostById(new Request(null, null, params))
             socket.emit('post:get:id.response', response.body)
         } catch (err) {
             socket.emit('post:get:id.response', { 'status': 'fail' })
@@ -26,7 +26,7 @@ export = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     
     const getPostBySender = async (req) => {
         try {
-            const response = await post.getPosts(new GenericRequest(req))
+            const response = await post.getPosts(new Request(req))
             socket.emit('post:get:sender.response', response.body)
         } catch (err) {
             socket.emit('post:get:sender.response', { 'status': 'fail' })
@@ -35,7 +35,7 @@ export = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
 
     const addNewPost = async (body) => {
         try {
-            const response = await post.addPost(new GenericRequest(body, body.sender))
+            const response = await post.addPost(new Request(body, body.sender))
             socket.emit('post:post.response', response.body)
         } catch (err) {
             socket.emit('post:post.response', { 'status': 'fail' })
@@ -45,8 +45,7 @@ export = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     
     const updatePost = async (req) => {
         try {
-            const response = await post.updatePost(new GenericRequest(req.body, null, req.params))
-            console.log(response)
+            const response = await post.updatePost(new Request(req.body, null, req.params))
             socket.emit('post:put.response', response.body)
         } catch (err) {
             socket.emit('post:put.response', { 'status': 'fail' })

@@ -21,7 +21,7 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const post_js_1 = __importDefault(require("../controllers/post.js"));
 const auth_js_1 = __importDefault(require("../controllers/auth.js"));
-const Request_js_1 = __importDefault(require("../utils/Request.js"));
+const Utils_1 = require("../Utils");
 /**
 * @swagger
 * components:
@@ -72,7 +72,7 @@ router.get('/', auth_js_1.default.authenticateMiddleware, (req, res) => __awaite
         const request = { body: {
                 sender: req.query.sender
             } };
-        const response = yield post_js_1.default.getPosts(Request_js_1.default.fromRestRequest(request));
+        const response = yield post_js_1.default.getPosts(Utils_1.Request.fromRestRequest(request));
         response.sendRestResponse(res);
     }
     catch (err) {
@@ -108,12 +108,7 @@ router.get('/', auth_js_1.default.authenticateMiddleware, (req, res) => __awaite
  */
 router.get('/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const request = {
-            body: {
-                id: req.params.id
-            }
-        };
-        const response = yield post_js_1.default.getPostById(Request_js_1.default.fromRestRequest(request));
+        const response = yield post_js_1.default.getPostById(Utils_1.Request.fromRestRequest(req));
         response.sendRestResponse(res);
     }
     catch (err) {
@@ -148,7 +143,7 @@ router.get('/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awa
  */
 router.post('/', auth_js_1.default.authenticateMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield post_js_1.default.addPost(Request_js_1.default.fromRestRequest(req));
+        const response = yield post_js_1.default.addPost(Utils_1.Request.fromRestRequest(req));
         response.sendRestResponse(res);
     }
     catch (err) {
@@ -190,7 +185,7 @@ router.post('/', auth_js_1.default.authenticateMiddleware, (req, res) => __await
  */
 router.put('/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield post_js_1.default.updatePost(Request_js_1.default.fromRestRequest(req));
+        const response = yield post_js_1.default.updatePost(Utils_1.Request.fromRestRequest(req));
         response.sendRestResponse(res);
     }
     catch (err) {

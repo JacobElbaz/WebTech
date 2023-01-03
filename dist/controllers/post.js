@@ -12,8 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const post_model_1 = __importDefault(require("../models/post_model"));
-const Response_1 = __importDefault(require("../utils/Response"));
-const Error_1 = __importDefault(require("../utils/Error"));
+const Utils_1 = require("../Utils");
 const getPosts = (req = null) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let posts = {};
@@ -23,19 +22,19 @@ const getPosts = (req = null) => __awaiter(void 0, void 0, void 0, function* () 
         else {
             posts = yield post_model_1.default.find({ 'sender': req.body.sender });
         }
-        return new Response_1.default(posts, null, null);
+        return new Utils_1.Response(posts, null, null);
     }
     catch (err) {
-        return new Response_1.default(null, null, new Error_1.default(400, err.message));
+        return new Utils_1.Response(null, null, new Utils_1.Error(400, err.message));
     }
 });
 const getPostById = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const post = yield post_model_1.default.findById(req.body.id);
-        return new Response_1.default(post, null, null);
+        const post = yield post_model_1.default.findById(req.params.id);
+        return new Utils_1.Response(post, null, null);
     }
     catch (err) {
-        return new Response_1.default(null, null, new Error_1.default(400, err.message));
+        return new Utils_1.Response(null, null, new Utils_1.Error(400, err.message));
     }
 });
 const addPost = (req) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,22 +44,19 @@ const addPost = (req) => __awaiter(void 0, void 0, void 0, function* () {
     });
     try {
         const newPost = yield post.save();
-        return new Response_1.default(newPost, req.userId, null);
+        return new Utils_1.Response(newPost, req.userId, null);
     }
     catch (err) {
-        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
+        return new Utils_1.Response(null, req.userId, new Utils_1.Error(400, err.message));
     }
 });
 const updatePost = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('req update');
-        console.log(req);
         const post = yield post_model_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        console.log(post);
-        return new Response_1.default(post, req.userId, null);
+        return new Utils_1.Response(post, req.userId, null);
     }
     catch (err) {
-        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
+        return new Utils_1.Response(null, req.userId, new Utils_1.Error(400, err.message));
     }
 });
 module.exports = { getPosts, getPostById, addPost, updatePost };

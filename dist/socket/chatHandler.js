@@ -34,7 +34,6 @@ module.exports = (io, socket) => {
             const messagesSends = yield message_model_1.default.find({ 'from': socket.data.user, 'to': payload.id });
             const messagesReceived = yield message_model_1.default.find({ 'from': payload.id, 'to': socket.data.user });
             messages = messagesSends.concat(messagesReceived);
-            console.log(messages);
         }
         catch (err) {
             console.log(err);

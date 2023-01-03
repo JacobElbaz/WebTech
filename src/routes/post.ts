@@ -9,7 +9,7 @@ import express from 'express'
 const router = express.Router()
 import post from '../controllers/post.js'
 import auth from '../controllers/auth.js'
-import GenericRequest from '../utils/Request.js'
+import { Request } from '../Utils'
 
 /**
 * @swagger
@@ -62,7 +62,7 @@ router.get('/', auth.authenticateMiddleware, async (req, res) => {
         const request = {body: {
             sender: req.query.sender
         }}
-        const response = await post.getPosts(GenericRequest.fromRestRequest(request))
+        const response = await post.getPosts(Request.fromRestRequest(request))
         response.sendRestResponse(res)
     } catch (err) {
         res.status(400).send({
@@ -99,12 +99,7 @@ router.get('/', auth.authenticateMiddleware, async (req, res) => {
  */
 router.get('/:id', auth.authenticateMiddleware, async (req, res) => {
     try {
-        const request = {
-            body: {
-                id: req.params.id
-            }
-        }
-        const response = await post.getPostById(GenericRequest.fromRestRequest(request))
+        const response = await post.getPostById(Request.fromRestRequest(req))
         response.sendRestResponse(res)
     } catch (err) {
         res.status(400).send({
@@ -139,7 +134,7 @@ router.get('/:id', auth.authenticateMiddleware, async (req, res) => {
  */
 router.post('/', auth.authenticateMiddleware, async (req, res) => {
     try {
-        const response = await post.addPost(GenericRequest.fromRestRequest(req))
+        const response = await post.addPost(Request.fromRestRequest(req))
         response.sendRestResponse(res)
     } catch (err) {
         res.status(400).send({
@@ -181,7 +176,7 @@ router.post('/', auth.authenticateMiddleware, async (req, res) => {
  */
 router.put('/:id', auth.authenticateMiddleware, async (req, res) => {
     try {
-        const response = await post.updatePost(GenericRequest.fromRestRequest(req))
+        const response = await post.updatePost(Request.fromRestRequest(req))
         response.sendRestResponse(res)
     } catch (err) {
         res.status(400).send({

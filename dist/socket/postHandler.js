@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const post_1 = __importDefault(require("../controllers/post"));
-const Request_1 = __importDefault(require("../utils/Request"));
+const Utils_1 = require("../Utils");
 module.exports = (io, socket) => {
     const getAllPosts = () => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -23,9 +23,9 @@ module.exports = (io, socket) => {
             socket.emit('post:get.response', { 'status': 'fail' });
         }
     });
-    const getPostById = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    const getPostById = (params) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const response = yield post_1.default.getPostById(new Request_1.default(req));
+            const response = yield post_1.default.getPostById(new Utils_1.Request(null, null, params));
             socket.emit('post:get:id.response', response.body);
         }
         catch (err) {
@@ -34,7 +34,7 @@ module.exports = (io, socket) => {
     });
     const getPostBySender = (req) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const response = yield post_1.default.getPosts(new Request_1.default(req));
+            const response = yield post_1.default.getPosts(new Utils_1.Request(req));
             socket.emit('post:get:sender.response', response.body);
         }
         catch (err) {
@@ -43,7 +43,7 @@ module.exports = (io, socket) => {
     });
     const addNewPost = (body) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const response = yield post_1.default.addPost(new Request_1.default(body, body.sender));
+            const response = yield post_1.default.addPost(new Utils_1.Request(body, body.sender));
             socket.emit('post:post.response', response.body);
         }
         catch (err) {
@@ -52,8 +52,7 @@ module.exports = (io, socket) => {
     });
     const updatePost = (req) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const response = yield post_1.default.updatePost(new Request_1.default(req.body, null, req.params));
-            console.log(response);
+            const response = yield post_1.default.updatePost(new Utils_1.Request(req.body, null, req.params));
             socket.emit('post:put.response', response.body);
         }
         catch (err) {
