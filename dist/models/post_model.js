@@ -11,6 +11,9 @@ const postSchema = new mongoose_1.default.Schema({
     sender: {
         type: String,
         required: true
+    },
+    photo: {
+        type: String,
     }
 });
 module.exports = mongoose_1.default.model('Post', postSchema);

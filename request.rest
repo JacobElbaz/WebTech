@@ -9,11 +9,12 @@ GET http://localhost:3000/post/635e7ef03656b7eec4e9b644
 ###
 
 POST http://localhost:3000/post
-Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzODM4MGI5ZWE0MWZkY2Y2NGUyNjJiZCIsImlhdCI6MTY2OTU2MjY1NCwiZXhwIjoxNjY5NTY2MjU0fQ.YaHLj394nWaebPGw1MpIhJLoam1kHHlqzYmFe6GyeQ4
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWEyM2UxZjkzMmZkMDM5MWQzM2IzMCIsImlhdCI6MTY3NjI5NTk1MiwiZXhwIjoxNjc2Mjk2NDUyfQ.ccMoWLts6-fkrr-0q1GLDzDYxt1TFZ8_Y_U6_tdRz7A
 
 {
-    "message" : "this is my new message",
-    "sender" : "123456"
+    "message": "jacobelbaz@outlook.fr",
+    "sender": "12345678",
+    "photo" : "jfsnefsjeknfdkejwnd.jpeg"
 }
 
 ###

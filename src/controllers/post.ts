@@ -1,13 +1,13 @@
 import Post from '../models/post_model'
 import { Response, Error } from '../Utils'
 
-const getPosts = async (req=null) => {
+const getPosts = async (req = null) => {
     try {
         let posts = {}
         if (req == null || req.body.sender == null) {
             posts = await Post.find()
         } else {
-            posts = await Post.find({'sender': req.body.sender})
+            posts = await Post.find({ 'sender': req.body.sender })
         }
         return new Response(posts, null, null)
     } catch (err) {
@@ -27,7 +27,8 @@ const getPostById = async (req) => {
 const addPost = async (req) => {
     const post = new Post({
         message: req.body.message,
-        sender: req.userId
+        sender: req.body.sender,
+        photo: req.body.photo
     })
 
     try {
@@ -46,5 +47,6 @@ const updatePost = async (req) => {
         return new Response(null, req.userId, new Error(400, err.message))
     }
 }
+
 
 export = { getPosts, getPostById, addPost, updatePost }

@@ -12,8 +12,8 @@ import cors from 'cors'
 app.use(cors())
 
 import bodyParser from 'body-parser'
-app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
+app.use(bodyParser.json({ limit: '50mb' }))
 
 import mongoose from "mongoose"
 mongoose.connect(process.env.DATABASE_URL) //,{useNewUrlParser:true})

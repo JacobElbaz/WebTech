@@ -16,8 +16,8 @@ const server = http_1.default.createServer(app);
 const cors_1 = __importDefault(require("cors"));
 app.use((0, cors_1.default)());
 const body_parser_1 = __importDefault(require("body-parser"));
-app.use(body_parser_1.default.urlencoded({ extended: true, limit: '1mb' }));
-app.use(body_parser_1.default.json());
+app.use(body_parser_1.default.urlencoded({ extended: true, limit: '50mb' }));
+app.use(body_parser_1.default.json({ limit: '50mb' }));
 const mongoose_1 = __importDefault(require("mongoose"));
 mongoose_1.default.connect(process.env.DATABASE_URL); //,{useNewUrlParser:true})
 const db = mongoose_1.default.connection;
