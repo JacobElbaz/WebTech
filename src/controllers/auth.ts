@@ -12,6 +12,7 @@ function sendError(res:Response, error:string){
 const register = async (req:Request ,res:Response)=>{
     const email = req.body.email
     const password = req.body.password
+    const name = req.body.name
 
     if (email == null || password == null){
         return sendError(res, 'please provide valid email and password')
@@ -27,12 +28,14 @@ const register = async (req:Request ,res:Response)=>{
         const encryptedPwd = await bcrypt.hash(password,salt)
         const newUser = new User({
             'email': email,
-            'password': encryptedPwd
+            'password': encryptedPwd,
+            'name': name
         })
         await newUser.save()
         return res.status(200).send({
             'email' : email,
-            '_id' : newUser._id
+            '_id' : newUser._id,
+            'name' : newUser.name
         })
     }catch(err){
         return sendError(res,'fail ...')
@@ -50,7 +53,7 @@ async function generateTokens(userId:string){
         process.env.REFRESH_TOKEN_SECRET
     )
 
-    return {'accessToken':accessToken, 'refreshToken':refreshToken}
+    return {'accessToken':accessToken, 'refreshToken':refreshToken, 'name': null, 'id': userId}
 }
 
 const login = async (req:Request ,res:Response)=>{
@@ -68,12 +71,12 @@ const login = async (req:Request ,res:Response)=>{
         if(!match) return sendError(res,'incorrect user or password')
 
         const tokens = await generateTokens(user._id.toString())
-
+        tokens.name = user.name
         if (user.refresh_tokens == null) user.refresh_tokens = [tokens.refreshToken]
         else user.refresh_tokens.push(tokens.refreshToken)
         await user.save()
-
         return res.status(200).send(tokens)
+
     }catch (err){
         return sendError(res,'fail checking user')
     }

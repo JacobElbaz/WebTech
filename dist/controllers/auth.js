@@ -22,6 +22,7 @@ function sendError(res, error) {
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
+    const name = req.body.name;
     if (email == null || password == null) {
         return sendError(res, 'please provide valid email and password');
     }
@@ -34,12 +35,14 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const encryptedPwd = yield bcrypt_1.default.hash(password, salt);
         const newUser = new user_model_1.default({
             'email': email,
-            'password': encryptedPwd
+            'password': encryptedPwd,
+            'name': name
         });
         yield newUser.save();
         return res.status(200).send({
             'email': email,
-            '_id': newUser._id
+            '_id': newUser._id,
+            'name': newUser.name
         });
     }
     catch (err) {
@@ -50,7 +53,7 @@ function generateTokens(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const accessToken = jsonwebtoken_1.default.sign({ 'id': userId }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
         const refreshToken = jsonwebtoken_1.default.sign({ 'id': userId }, process.env.REFRESH_TOKEN_SECRET);
-        return { 'accessToken': accessToken, 'refreshToken': refreshToken };
+        return { 'accessToken': accessToken, 'refreshToken': refreshToken, 'name': null, 'id': userId };
     });
 }
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,6 +70,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!match)
             return sendError(res, 'incorrect user or password');
         const tokens = yield generateTokens(user._id.toString());
+        tokens.name = user.name;
         if (user.refresh_tokens == null)
             user.refresh_tokens = [tokens.refreshToken];
         else

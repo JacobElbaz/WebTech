@@ -29,7 +29,8 @@ describe("Auth Tests", ()=>{
     test("Register test",async ()=>{
         const response = await request(app).post('/auth/register').send({
             "email": userEmail,
-            "password": userPassword 
+            "password": userPassword,
+            "name": 'Jacob' 
         })
         expect(response.statusCode).toEqual(200)
     })

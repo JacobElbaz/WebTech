@@ -38,7 +38,8 @@ describe("Auth Tests", () => {
     test("Register test", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).post('/auth/register').send({
             "email": userEmail,
-            "password": userPassword
+            "password": userPassword,
+            "name": 'Jacob'
         });
         expect(response.statusCode).toEqual(200);
     }));
