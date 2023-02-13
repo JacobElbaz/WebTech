@@ -13,6 +13,8 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const http_1 = __importDefault(require("http"));
 const server = http_1.default.createServer(app);
+const cors_1 = __importDefault(require("cors"));
+app.use((0, cors_1.default)());
 const body_parser_1 = __importDefault(require("body-parser"));
 app.use(body_parser_1.default.urlencoded({ extended: true, limit: '1mb' }));
 app.use(body_parser_1.default.json());

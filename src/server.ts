@@ -8,6 +8,8 @@ import express from 'express'
 const app = express()
 import http from 'http'
 const server = http.createServer(app)
+import cors from 'cors'
+app.use(cors())
 
 import bodyParser from 'body-parser'
 app.use(bodyParser.urlencoded({extended:true, limit: '1mb'}))
