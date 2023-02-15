@@ -25,6 +25,9 @@ app.use('/uploads', express.static('uploads'))
 import authRouter from './routes/auth.js'
 app.use('/auth', authRouter)
 
+import userRouter from './routes/user.js'
+app.use('/user', userRouter)
+
 import postRouter from './routes/post.js'
 app.use('/post', postRouter)
 

@@ -27,7 +27,8 @@ const getPostById = async (req) => {
 const addPost = async (req) => {
     const post = new Post({
         message: req.body.message,
-        sender: req.body.sender,
+        senderId: req.body.senderId,
+        senderName: req.body.senderName,
         photo: req.body.photo
     })
 

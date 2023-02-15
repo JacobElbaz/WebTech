@@ -25,6 +25,8 @@ app.use('/public', express_1.default.static('public'));
 app.use('/uploads', express_1.default.static('uploads'));
 const auth_js_1 = __importDefault(require("./routes/auth.js"));
 app.use('/auth', auth_js_1.default);
+const user_js_1 = __importDefault(require("./routes/user.js"));
+app.use('/user', user_js_1.default);
 const post_js_1 = __importDefault(require("./routes/post.js"));
 app.use('/post', post_js_1.default);
 const file_js_1 = __importDefault(require("./routes/file.js"));

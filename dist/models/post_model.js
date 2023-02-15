@@ -8,7 +8,11 @@ const postSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
-    sender: {
+    senderId: {
+        type: String,
+        required: true
+    },
+    senderName: {
         type: String,
         required: true
     },

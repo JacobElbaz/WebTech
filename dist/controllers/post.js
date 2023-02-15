@@ -40,7 +40,8 @@ const getPostById = (req) => __awaiter(void 0, void 0, void 0, function* () {
 const addPost = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const post = new post_model_1.default({
         message: req.body.message,
-        sender: req.body.sender,
+        senderId: req.body.senderId,
+        senderName: req.body.senderName,
         photo: req.body.photo
     });
     try {
