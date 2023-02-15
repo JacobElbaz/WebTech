@@ -8,8 +8,6 @@ import express from 'express'
 const app = express()
 import http from 'http'
 const server = http.createServer(app)
-import cors from 'cors'
-app.use(cors())
 
 import bodyParser from 'body-parser'
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
@@ -22,12 +20,16 @@ db.on('error', error => { console.error(error) })
 db.once('open', () => { console.log('connected to mongo DB') })
 
 app.use('/public', express.static('public'))
+app.use('/uploads', express.static('uploads'))
 
 import authRouter from './routes/auth.js'
 app.use('/auth', authRouter)
 
 import postRouter from './routes/post.js'
 app.use('/post', postRouter)
+
+import fileRouter from './routes/file.js'
+app.use('/file', fileRouter)
 
 import swaggerUI from "swagger-ui-express"
 import swaggerJsDoc from "swagger-jsdoc"
