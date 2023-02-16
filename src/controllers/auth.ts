@@ -53,7 +53,7 @@ async function generateTokens(userId:string){
         process.env.REFRESH_TOKEN_SECRET
     )
 
-    return {'accessToken':accessToken, 'refreshToken':refreshToken, 'name': null, 'id': userId}
+    return {'accessToken':accessToken, 'refreshToken':refreshToken, 'name': null, 'id': userId, 'picture': null}
 }
 
 const login = async (req:Request ,res:Response)=>{
@@ -72,6 +72,7 @@ const login = async (req:Request ,res:Response)=>{
 
         const tokens = await generateTokens(user._id.toString())
         tokens.name = user.name
+        tokens.picture = user.picture
         if (user.refresh_tokens == null) user.refresh_tokens = [tokens.refreshToken]
         else user.refresh_tokens.push(tokens.refreshToken)
         await user.save()

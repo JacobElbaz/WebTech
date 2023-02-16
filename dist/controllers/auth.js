@@ -53,7 +53,7 @@ function generateTokens(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const accessToken = jsonwebtoken_1.default.sign({ 'id': userId }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
         const refreshToken = jsonwebtoken_1.default.sign({ 'id': userId }, process.env.REFRESH_TOKEN_SECRET);
-        return { 'accessToken': accessToken, 'refreshToken': refreshToken, 'name': null, 'id': userId };
+        return { 'accessToken': accessToken, 'refreshToken': refreshToken, 'name': null, 'id': userId, 'picture': null };
     });
 }
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -71,6 +71,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return sendError(res, 'incorrect user or password');
         const tokens = yield generateTokens(user._id.toString());
         tokens.name = user.name;
+        tokens.picture = user.picture;
         if (user.refresh_tokens == null)
             user.refresh_tokens = [tokens.refreshToken];
         else
