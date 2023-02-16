@@ -16,4 +16,16 @@ router.get('/', auth.authenticateMiddleware, async (req, res) => {
     }
 })
 
+router.get('/:id', auth.authenticateMiddleware, async (req, res) => {
+    try {
+        const response = await user.getUserById(Request.fromRestRequest(req))
+        response.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+})
+
 export = router

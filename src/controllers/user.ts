@@ -10,4 +10,13 @@ const getUsers = async (req = null) => {
     }
 }
 
-export = { getUsers }
+const getUserById = async (req: { params: { id: any } }) => {
+    try {
+        const user = await User.findById(req.params.id)
+        return new Response(user, null, null)
+    } catch (err) {
+        return new Response(null, null, new Error(400, err.message))
+    }
+}
+
+export = { getUsers, getUserById }

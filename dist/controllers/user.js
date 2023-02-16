@@ -22,5 +22,14 @@ const getUsers = (req = null) => __awaiter(void 0, void 0, void 0, function* () 
         return new Utils_1.Response(null, null, new Utils_1.Error(400, err.message));
     }
 });
-module.exports = { getUsers };
+const getUserById = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.default.findById(req.params.id);
+        return new Utils_1.Response(user, null, null);
+    }
+    catch (err) {
+        return new Utils_1.Response(null, null, new Utils_1.Error(400, err.message));
+    }
+});
+module.exports = { getUsers, getUserById };
 //# sourceMappingURL=user.js.map
