@@ -23,6 +23,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
+    const picture = req.body.picture;
     if (email == null || password == null) {
         return sendError(res, 'please provide valid email and password');
     }
@@ -36,13 +37,15 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const newUser = new user_model_1.default({
             'email': email,
             'password': encryptedPwd,
-            'name': name
+            'name': name,
+            'picture': picture
         });
         yield newUser.save();
         return res.status(200).send({
             'email': email,
             '_id': newUser._id,
-            'name': newUser.name
+            'name': newUser.name,
+            'picture': newUser.picture
         });
     }
     catch (err) {

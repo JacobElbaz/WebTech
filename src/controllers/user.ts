@@ -19,4 +19,13 @@ const getUserById = async (req: { params: { id: any } }) => {
     }
 }
 
-export = { getUsers, getUserById }
+const updateUser = async (req) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        return new Response(user, req.userId, null)
+    } catch (err) {
+        return new Response(null, req.userId, new Error(400, err.message))
+    }
+}
+
+export = { getUsers, getUserById, updateUser }

@@ -30,6 +30,28 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
         io.to(socket.data.user).emit("chat:message", messages)
     }
 
+    const getConversation = async (req) => {
+        try{
+            const messages = await Message.find({ $or: [ {$and: [{'from': req.body.user1}, {'to': req.body.user2}]}, {$and: [{'from' : req.body.user2}, {'to': req.body.user1}]}]}).sort({'sendAt': 1})
+            io.to(socket.data.user).emit("chat:message", messages)
+        } catch(err){
+            console.log('fail getting conversation messages' + err)
+        }
+    }
+
+    const getGlobalMessages = async () => {
+        try{
+            const messages = await Message.find({'to': 'global'})
+            console.log('get '+messages);
+            
+            io.to(socket.data.user).emit('chat:message', messages)
+        } catch(err) {
+            console.log('fail getting global messages' + err)
+        }
+    }
+
     socket.on("chat:send_message", sendMessage)
     socket.on("chat:get_messages", getMessagesById)
+    socket.on("chat:get_global_messages", getGlobalMessages)
+    socket.on("chat:get_conversation", getConversation)
 }

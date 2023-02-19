@@ -40,7 +40,28 @@ module.exports = (io, socket) => {
         }
         io.to(socket.data.user).emit("chat:message", messages);
     });
+    const getConversation = (req) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const messages = yield message_model_1.default.find({ $or: [{ $and: [{ 'from': req.body.user1 }, { 'to': req.body.user2 }] }, { $and: [{ 'from': req.body.user2 }, { 'to': req.body.user1 }] }] }).sort({ 'sendAt': 1 });
+            io.to(socket.data.user).emit("chat:message", messages);
+        }
+        catch (err) {
+            console.log('fail getting conversation messages' + err);
+        }
+    });
+    const getGlobalMessages = () => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const messages = yield message_model_1.default.find({ 'to': 'global' });
+            console.log('get ' + messages);
+            io.to(socket.data.user).emit('chat:message', messages);
+        }
+        catch (err) {
+            console.log('fail getting global messages' + err);
+        }
+    });
     socket.on("chat:send_message", sendMessage);
     socket.on("chat:get_messages", getMessagesById);
+    socket.on("chat:get_global_messages", getGlobalMessages);
+    socket.on("chat:get_conversation", getConversation);
 };
 //# sourceMappingURL=chatHandler.js.map

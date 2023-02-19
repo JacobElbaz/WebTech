@@ -13,6 +13,7 @@ const register = async (req:Request ,res:Response)=>{
     const email = req.body.email
     const password = req.body.password
     const name = req.body.name
+    const picture = req.body.picture
 
     if (email == null || password == null){
         return sendError(res, 'please provide valid email and password')
@@ -29,13 +30,15 @@ const register = async (req:Request ,res:Response)=>{
         const newUser = new User({
             'email': email,
             'password': encryptedPwd,
-            'name': name
+            'name': name,
+            'picture': picture
         })
         await newUser.save()
         return res.status(200).send({
             'email' : email,
             '_id' : newUser._id,
-            'name' : newUser.name
+            'name' : newUser.name,
+            'picture': newUser.picture
         })
     }catch(err){
         return sendError(res,'fail ...')

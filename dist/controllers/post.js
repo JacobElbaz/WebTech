@@ -20,7 +20,7 @@ const getPosts = (req = null) => __awaiter(void 0, void 0, void 0, function* () 
             posts = yield post_model_1.default.find();
         }
         else {
-            posts = yield post_model_1.default.find({ 'sender': req.body.sender });
+            posts = yield post_model_1.default.find({ 'senderId': req.body.sender[0] });
         }
         return new Utils_1.Response(posts, null, null);
     }

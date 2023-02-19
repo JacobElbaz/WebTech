@@ -40,5 +40,17 @@ router.get('/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awa
         });
     }
 }));
+router.put('/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield user_js_1.default.updateUser(Utils_1.Request.fromRestRequest(req));
+        response.sendRestResponse(res);
+    }
+    catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        });
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=user.js.map
