@@ -49,5 +49,15 @@ const updatePost = async (req) => {
     }
 }
 
+const deletePost = async (req) => {
+    try {
+        const post = await Post.deleteOne({'_id': req.params.id})
+        console.log(`Post ${req.params.id} was deleted`);
+        return new Response(post, req.userId, null)
+    } catch(err){
+        console.log('Fail to delete');
+    }
+}
 
-export = { getPosts, getPostById, addPost, updatePost }
+
+export = { getPosts, getPostById, addPost, updatePost, deletePost }

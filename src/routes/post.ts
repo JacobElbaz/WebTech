@@ -186,4 +186,15 @@ router.put('/:id', auth.authenticateMiddleware, async (req, res) => {
     }
 })
 
+router.post('/delete/:id', auth.authenticateMiddleware, async (req, res) => {
+    try {
+        const response = await post.deletePost(Request.fromRestRequest(req))
+        response.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+} )
 export = router

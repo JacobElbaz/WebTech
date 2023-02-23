@@ -61,5 +61,15 @@ const updatePost = (req) => __awaiter(void 0, void 0, void 0, function* () {
         return new Utils_1.Response(null, req.userId, new Utils_1.Error(400, err.message));
     }
 });
-module.exports = { getPosts, getPostById, addPost, updatePost };
+const deletePost = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const post = yield post_model_1.default.deleteOne({ '_id': req.params.id });
+        console.log(`Post ${req.params.id} was deleted`);
+        return new Utils_1.Response(post, req.userId, null);
+    }
+    catch (err) {
+        console.log('Fail to delete');
+    }
+});
+module.exports = { getPosts, getPostById, addPost, updatePost, deletePost };
 //# sourceMappingURL=post.js.map
