@@ -30,17 +30,22 @@ const Utils_1 = require("../Utils");
 *       type: object
 *       required:
 *         - message
-*         - sender
+*         - senderId
+*         - senderName
 *       properties:
 *         message:
 *           type: string
 *           description: The post text
-*         sender:
+*         senderID:
 *           type: string
 *           description: The sending user id
+*         senderName:
+*           type: string
+*           description: The sending user name
 *       example:
 *         message: 'this is my new post'
-*         sender: '12342345234556'
+*         senderId: '12342345234556'
+*         senderName: 'Adam Sandler'
 */
 /**
  * @swagger
@@ -52,7 +57,7 @@ const Utils_1 = require("../Utils");
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: sender
+ *         name: senderId
  *         schema:
  *           type: string
  *           description: filter the posts according to the given sender id
@@ -195,6 +200,36 @@ router.put('/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awa
         });
     }
 }));
+/**
+ * @swagger
+ * /post/delete/{id}:
+ *   post:
+ *     summary: delete post
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the deleted post id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     responses:
+ *       200:
+ *         description: the requested post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *
+ */
 router.post('/delete/:id', auth_js_1.default.authenticateMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield post_js_1.default.deletePost(Utils_1.Request.fromRestRequest(req));
