@@ -9,10 +9,12 @@ import User from '../models/user_model'
 import Message from "../models/message_model";
 
 const userEmail = "user1@gmail.com"
-const userPassword = "12345"
+const userPassword = "12345678"
+const userName = "User1"
 
 const userEmail2 = "user2@gmail.com"
-const userPassword2 = "12345"
+const userPassword2 = "12345678"
+const userName2 = "User2"
 
 let newPostId = null
 
@@ -36,7 +38,8 @@ function clientSocketConnect(clientSocket): Promise<string> {
 const connectUser = async (userEmail, userPassword) => {
     const response1 = await request(server).post('/auth/register').send({
         "email": userEmail,
-        "password": userPassword
+        "password": userPassword,
+        "name": userName
     })
     const userId = response1.body._id
     const response = await request(server).post('/auth/login').send({
@@ -59,14 +62,14 @@ describe("my awesome project", () => {
     jest.setTimeout(15000)
 
     beforeAll(async () => {
-        await Post.remove()
-        await User.remove()
-        await Message.remove()
         client1 = await connectUser(userEmail, userPassword)
         client2 = await connectUser(userEmail2, userPassword2)
     });
 
-    afterAll(() => {
+    afterAll( async () => {
+        await User.remove({ email: userEmail })
+        await User.remove({ email: userEmail2 })
+        await Post.remove({ _id: newPostId })
         client1.socket.close()
         client2.socket.close()
         server.close()
@@ -82,10 +85,10 @@ describe("my awesome project", () => {
     });
 
     test("postAdd", (done) => {
-        client1.socket.emit('post:post', { 'message': 'this is my message', 'sender': client1.id })
+        client1.socket.emit('post:post', { 'message': 'this is my message', 'senderId': client1.id, 'senderName': userName })
         client1.socket.on('post:post.response', (arg) => {
             expect(arg.message).toBe('this is my message')
-            expect(arg.sender).toBe(client1.id)
+            expect(arg.senderId).toBe(client1.id)
             newPostId = arg._id
             done()
         })
@@ -94,26 +97,25 @@ describe("my awesome project", () => {
     test("Post get all test", (done) => {
         client1.socket.emit('post:get')
         client1.socket.on('post:get.response', (arg) => {
-            expect(arg.length).toEqual(1)
-            expect(arg[0].sender).toBe(client1.id)
-            expect(arg[0].message).toBe('this is my message')
+            expect(arg[arg.length - 1].senderId).toBe(client1.id)
+            expect(arg[arg.length - 1].message).toBe('this is my message')
             done()
         })
     });
 
-    test("Post get by id", (done) => {
+    test("Get post by id", (done) => {
         client1.socket.emit('post:get:id', { 'id': newPostId })
         client1.socket.on('post:get:id.response', (arg) => {
-            expect(arg.sender).toBe(client1.id)
+            expect(arg.senderId).toBe(client1.id)
             expect(arg.message).toBe('this is my message')
             done()
         })
     });
 
-    test("Post get by sender", (done) => {
+    test("Get post by sender", (done) => {
         client1.socket.emit('post:get:sender', { 'sender': client1.id })
         client1.socket.on('post:get:sender.response', (arg) => {
-            expect(arg[0].sender).toBe(client1.id)
+            expect(arg[0].senderId).toBe(client1.id)
             expect(arg[0].message).toBe('this is my message')
             done()
         })
@@ -123,7 +125,7 @@ describe("my awesome project", () => {
         client1.socket.emit('post:put', { 'body':{ 'message' : 'this is the new test post message'}, 'params': {'id' : newPostId} })
         client1.socket.on('post:put.response', (arg) => {
             expect(arg.message).toBe('this is the new test post message')
-            expect(arg.sender).toBe(client1.id)
+            expect(arg.senderId).toBe(client1.id)
             done()
         })
     })

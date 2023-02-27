@@ -15,23 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const server_1 = __importDefault(require("../server"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const post_model_1 = __importDefault(require("../models/post_model"));
 const user_model_1 = __importDefault(require("../models/user_model"));
 const userEmail = "user1@gmail.com";
-const userPassword = "12345";
+const userPassword = "12345678";
+const userName = 'User1';
 let accessToken = '';
 let refreshToken = '';
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield post_model_1.default.remove();
-    yield user_model_1.default.remove();
 }));
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield post_model_1.default.remove();
-    yield user_model_1.default.remove();
+    yield user_model_1.default.remove({ email: userEmail });
     mongoose_1.default.connection.close();
 }));
 describe("Auth Tests", () => {
-    test("Not aquthorized attempt test", () => __awaiter(void 0, void 0, void 0, function* () {
+    test("Not authorized attempt test", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).get('/post');
         expect(response.statusCode).not.toEqual(200);
     }));
@@ -39,14 +36,23 @@ describe("Auth Tests", () => {
         const response = yield (0, supertest_1.default)(server_1.default).post('/auth/register').send({
             "email": userEmail,
             "password": userPassword,
-            "name": 'Jacob'
+            "name": userName
         });
         expect(response.statusCode).toEqual(200);
     }));
-    test("Login test wrog password", () => __awaiter(void 0, void 0, void 0, function* () {
+    test("Login test wrong password", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).post('/auth/login').send({
             "email": userEmail,
             "password": userPassword + '4'
+        });
+        expect(response.statusCode).not.toEqual(200);
+        const access = response.body.accesstoken;
+        expect(access).toBeUndefined();
+    }));
+    test("Login test wrong email", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(server_1.default).post('/auth/login').send({
+            "email": userEmail + '4',
+            "password": userPassword
         });
         expect(response.statusCode).not.toEqual(200);
         const access = response.body.accesstoken;

@@ -17,8 +17,7 @@ const messageSchema = new mongoose_1.default.Schema({
         required: true
     },
     sendAt: {
-        type: Date,
-        required: true
+        type: Date
     }
 });
 module.exports = mongoose_1.default.model('Message', messageSchema);

@@ -18,11 +18,12 @@ const socket_io_client_1 = __importDefault(require("socket.io-client"));
 const supertest_1 = __importDefault(require("supertest"));
 const post_model_1 = __importDefault(require("../models/post_model"));
 const user_model_1 = __importDefault(require("../models/user_model"));
-const message_model_1 = __importDefault(require("../models/message_model"));
 const userEmail = "user1@gmail.com";
-const userPassword = "12345";
+const userPassword = "12345678";
+const userName = "User1";
 const userEmail2 = "user2@gmail.com";
-const userPassword2 = "12345";
+const userPassword2 = "12345678";
+const userName2 = "User2";
 let newPostId = null;
 let client1;
 let client2;
@@ -36,7 +37,8 @@ function clientSocketConnect(clientSocket) {
 const connectUser = (userEmail, userPassword) => __awaiter(void 0, void 0, void 0, function* () {
     const response1 = yield (0, supertest_1.default)(app_1.default).post('/auth/register').send({
         "email": userEmail,
-        "password": userPassword
+        "password": userPassword,
+        "name": userName
     });
     const userId = response1.body._id;
     const response = yield (0, supertest_1.default)(app_1.default).post('/auth/login').send({
@@ -56,18 +58,18 @@ const connectUser = (userEmail, userPassword) => __awaiter(void 0, void 0, void 
 describe("my awesome project", () => {
     jest.setTimeout(15000);
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield post_model_1.default.remove();
-        yield user_model_1.default.remove();
-        yield message_model_1.default.remove();
         client1 = yield connectUser(userEmail, userPassword);
         client2 = yield connectUser(userEmail2, userPassword2);
     }));
-    afterAll(() => {
+    afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield user_model_1.default.remove({ email: userEmail });
+        yield user_model_1.default.remove({ email: userEmail2 });
+        yield post_model_1.default.remove({ _id: newPostId });
         client1.socket.close();
         client2.socket.close();
         app_1.default.close();
         mongoose_1.default.connection.close();
-    });
+    }));
     test("should work", (done) => {
         client1.socket.once("echo:echo_res", (arg) => {
             expect(arg.msg).toBe('hello');
@@ -76,10 +78,10 @@ describe("my awesome project", () => {
         client1.socket.emit("echo:echo", { 'msg': 'hello' });
     });
     test("postAdd", (done) => {
-        client1.socket.emit('post:post', { 'message': 'this is my message', 'sender': client1.id });
+        client1.socket.emit('post:post', { 'message': 'this is my message', 'senderId': client1.id, 'senderName': userName });
         client1.socket.on('post:post.response', (arg) => {
             expect(arg.message).toBe('this is my message');
-            expect(arg.sender).toBe(client1.id);
+            expect(arg.senderId).toBe(client1.id);
             newPostId = arg._id;
             done();
         });
@@ -87,24 +89,23 @@ describe("my awesome project", () => {
     test("Post get all test", (done) => {
         client1.socket.emit('post:get');
         client1.socket.on('post:get.response', (arg) => {
-            expect(arg.length).toEqual(1);
-            expect(arg[0].sender).toBe(client1.id);
-            expect(arg[0].message).toBe('this is my message');
+            expect(arg[arg.length - 1].senderId).toBe(client1.id);
+            expect(arg[arg.length - 1].message).toBe('this is my message');
             done();
         });
     });
-    test("Post get by id", (done) => {
+    test("Get post by id", (done) => {
         client1.socket.emit('post:get:id', { 'id': newPostId });
         client1.socket.on('post:get:id.response', (arg) => {
-            expect(arg.sender).toBe(client1.id);
+            expect(arg.senderId).toBe(client1.id);
             expect(arg.message).toBe('this is my message');
             done();
         });
     });
-    test("Post get by sender", (done) => {
+    test("Get post by sender", (done) => {
         client1.socket.emit('post:get:sender', { 'sender': client1.id });
         client1.socket.on('post:get:sender.response', (arg) => {
-            expect(arg[0].sender).toBe(client1.id);
+            expect(arg[0].senderId).toBe(client1.id);
             expect(arg[0].message).toBe('this is my message');
             done();
         });
@@ -113,7 +114,7 @@ describe("my awesome project", () => {
         client1.socket.emit('post:put', { 'body': { 'message': 'this is the new test post message' }, 'params': { 'id': newPostId } });
         client1.socket.on('post:put.response', (arg) => {
             expect(arg.message).toBe('this is the new test post message');
-            expect(arg.sender).toBe(client1.id);
+            expect(arg.senderId).toBe(client1.id);
             done();
         });
     });

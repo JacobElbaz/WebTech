@@ -7,7 +7,7 @@ const getPosts = async (req = null) => {
         if (req == null || req.body.sender == null) {
             posts = await Post.find()
         } else {
-            posts = await Post.find({ 'senderId': req.body.sender[0] })
+            posts = await Post.find({ 'senderId': req.body.sender })
         }
         return new Response(posts, null, null)
     } catch (err) {

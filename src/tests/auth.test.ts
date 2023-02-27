@@ -1,27 +1,24 @@
 import request from 'supertest'
 import app from '../server'
 import mongoose from 'mongoose'
-import Post from '../models/post_model'
 import User from '../models/user_model'
 
 const userEmail = "user1@gmail.com"
-const userPassword = "12345"
+const userPassword = "12345678"
+const userName = 'User1'
 let accessToken = ''
 let refreshToken = ''
 
 beforeAll(async ()=>{
-    await Post.remove()
-    await User.remove()
 })
 
 afterAll(async ()=>{
-    await Post.remove()
-    await User.remove()
+    await User.remove({ email: userEmail })
     mongoose.connection.close()
 })
 
 describe("Auth Tests", ()=>{
-    test("Not aquthorized attempt test",async ()=>{
+    test("Not authorized attempt test",async ()=>{
         const response = await request(app).get('/post');
         expect(response.statusCode).not.toEqual(200)
     })
@@ -30,15 +27,25 @@ describe("Auth Tests", ()=>{
         const response = await request(app).post('/auth/register').send({
             "email": userEmail,
             "password": userPassword,
-            "name": 'Jacob' 
+            "name": userName 
         })
         expect(response.statusCode).toEqual(200)
     })
 
-    test("Login test wrog password",async ()=>{
+    test("Login test wrong password",async ()=>{
         const response = await request(app).post('/auth/login').send({
             "email": userEmail,
             "password": userPassword + '4'
+        })
+        expect(response.statusCode).not.toEqual(200)
+        const access = response.body.accesstoken
+        expect(access).toBeUndefined()
+    })
+    
+    test("Login test wrong email",async ()=>{
+        const response = await request(app).post('/auth/login').send({
+            "email": userEmail + '4',
+            "password": userPassword
         })
         expect(response.statusCode).not.toEqual(200)
         const access = response.body.accesstoken

@@ -10,7 +10,8 @@
     "test": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests",
     "testAuth": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/auth.test.js",
     "testPost": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/post.test.js",
-    "testSocket": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/socket.test.js"
+    "testSocket": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/socket.test.js",
+    "testUser": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/tests/user.test.js"
   },
   "author": "Jacob Elbaz",
   "license": "ISC",
