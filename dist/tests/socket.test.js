@@ -118,7 +118,7 @@ describe("my awesome project", () => {
             done();
         });
     });
-    test("Test chat messages", (done) => {
+    test("Send message", (done) => {
         const message = "hi... test 123";
         client2.socket.once('chat:message', (args) => {
             expect(args.to).toBe(client2.id);

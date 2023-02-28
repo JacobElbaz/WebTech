@@ -9,7 +9,8 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
         const message = new Message({
             message: payload.message,
             from: socket.data.user,
-            to: payload.to
+            to: payload.to,
+            sendAt: new Date()
         })
         try {
             const response = await message.save()
@@ -18,6 +19,22 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
             console.log(err)
         }
         io.to(message.to).emit("chat:message",{'to':message.to, 'from': message.from, 'message':message.message})
+    }
+
+    const sendGlobalMessage = async (payload) => {
+        const message = new Message({
+            message: payload.message,
+            from: socket.data.user,
+            to: payload.to,
+            sendAt: new Date()
+        })
+        try {
+            const response = await message.save()
+            console.log(response)
+        } catch (err) {
+            console.log(err)
+        }
+        io.emit("chat:global_message",{'to':message.to, 'from': message.from, 'message':message.message})
     }
 
     const getMessagesById = async (payload) => {
@@ -51,6 +68,7 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     }
 
     socket.on("chat:send_message", sendMessage)
+    socket.on("chat:send_global_message", sendGlobalMessage)
     socket.on("chat:get_messages", getMessagesById)
     socket.on("chat:get_global_messages", getGlobalMessages)
     socket.on("chat:get_conversation", getConversation)

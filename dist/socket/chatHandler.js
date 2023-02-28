@@ -17,7 +17,8 @@ module.exports = (io, socket) => {
         const message = new message_model_1.default({
             message: payload.message,
             from: socket.data.user,
-            to: payload.to
+            to: payload.to,
+            sendAt: new Date()
         });
         try {
             const response = yield message.save();
@@ -27,6 +28,22 @@ module.exports = (io, socket) => {
             console.log(err);
         }
         io.to(message.to).emit("chat:message", { 'to': message.to, 'from': message.from, 'message': message.message });
+    });
+    const sendGlobalMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+        const message = new message_model_1.default({
+            message: payload.message,
+            from: socket.data.user,
+            to: payload.to,
+            sendAt: new Date()
+        });
+        try {
+            const response = yield message.save();
+            console.log(response);
+        }
+        catch (err) {
+            console.log(err);
+        }
+        io.emit("chat:global_message", { 'to': message.to, 'from': message.from, 'message': message.message });
     });
     const getMessagesById = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         let messages = {};
@@ -60,6 +77,7 @@ module.exports = (io, socket) => {
         }
     });
     socket.on("chat:send_message", sendMessage);
+    socket.on("chat:send_global_message", sendGlobalMessage);
     socket.on("chat:get_messages", getMessagesById);
     socket.on("chat:get_global_messages", getGlobalMessages);
     socket.on("chat:get_conversation", getConversation);
